@@ -21,7 +21,7 @@ func LogFatalCustomError(msg string, err error) {
 		return
 	}
 
-	log.Fatal(fmt.Errorf("\n\nerror:%s\n%v\n ", msg, err))
+	log.Fatal(fmt.Errorf("\n\nerror: %s\n%v\n ", msg, err))
 }
 
 func LogCustomError(msg string, err error) {
@@ -29,5 +29,5 @@ func LogCustomError(msg string, err error) {
 		return
 	}
 
-	fmt.Print(fmt.Errorf("\n\nerror:%s\n%s\n ", msg, err))
+	fmt.Print(fmt.Errorf("\n\nerror: %s\n%s\n ", msg, err))
 }

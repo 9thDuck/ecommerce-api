@@ -11,8 +11,9 @@ import (
 func main() {
 	err := godotenv.Load()
 	utils.LogFatalCustomError("err loading .env", err)
-
-	db.Setup()
+	// Supply all the entities
+	entitySlice := []any{&users.User{}}
+	db.SetupDbInstance(entitySlice)
 
 	app := fiber.New()
 	users.RegisterRoutes(app)

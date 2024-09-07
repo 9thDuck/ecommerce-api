@@ -1,7 +1,6 @@
 package db
 
 import (
-	"github.com/9thDuck/ecommerce-api.git/users"
 	"github.com/9thDuck/ecommerce-api.git/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -22,21 +21,20 @@ func connect() (db *gorm.DB, err error) {
 	return db, nil
 }
 
-type DB struct {
-	instance *gorm.DB
-}
+var Instance *gorm.DB
 
-func Setup() *DB {
-	dbInstance, err := connect()
+func SetupDbInstance(tables []interface{}) {
+	db, err := connect()
 	utils.LogFatalCustomError("failed to connect to db", err)
 
-	db := DB{dbInstance}
-	db.Migrate()
+	migrate(db, tables)
 
-	return &db
+	Instance = db
 }
 
-func (db *DB) Migrate() {
-	err := db.instance.AutoMigrate(&users.User{})
-	utils.LogFatalCustomError("failed to migrate users table", err)
+func migrate(db *gorm.DB, tables []interface{}) {
+	for _, val := range tables {
+		err := db.AutoMigrate(val)
+		utils.LogFatalCustomError("failed to migrate users table", err)
+	}
 }
