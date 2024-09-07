@@ -8,3 +8,14 @@ func createUser(user *User) error {
 	// returns an error / nil
 	return user.Create()
 }
+
+func loginUser(user *User) error {
+	if err := user.getUser(); err != nil {
+		return err
+	}
+
+	if err := user.verifyLoginCredentials(); err != nil {
+		return err
+	}
+	return nil
+}

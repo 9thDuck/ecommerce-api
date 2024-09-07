@@ -1,6 +1,7 @@
 package users
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/9thDuck/ecommerce-api.git/db"
@@ -38,3 +39,22 @@ func New(username, email, password string) *User {
 		Password: password,
 	}
 }
+
+func (user *User) getUser() error {
+	if foundUsers := db.Instance.Limit(1).Find(&user, &user).RowsAffected; foundUsers == 0 {
+		return errors.New("")
+	}
+	return nil
+}
+
+func (user *User) verifyLoginCredentials() error {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.HashedPassword), []byte(user.Password)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// func (user *User) generateToken() error {
+
+// }

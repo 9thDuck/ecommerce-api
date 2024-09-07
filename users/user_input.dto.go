@@ -5,3 +5,8 @@ type createUserInput struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required,min=8,max=20,containsany=abcdefghijklmnopqrstuvwxyz,containsany=ABCDEFGHIJKLMNOPQRSTUVWXYZ,containsany=0123456789"`
 }
+
+type loginUserInput struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
