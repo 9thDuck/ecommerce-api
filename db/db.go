@@ -38,5 +38,5 @@ func Setup() *DB {
 
 func (db *DB) Migrate() {
 	err := db.instance.AutoMigrate(&users.User{})
-	utils.LogFatalCustomError("User entity", err)
+	utils.LogFatalCustomError("failed to migrate users table", err)
 }
