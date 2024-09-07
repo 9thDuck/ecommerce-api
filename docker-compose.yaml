@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres
+    container_name: ecommerce_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 7%tY*auV2wsp4Uz
+      POSTGRES_DB: ecommerce_db
+    volumes:
+      - "./dbdata:/data/db"
+    restart: always
+    ports:
+      - "3001:5432"
