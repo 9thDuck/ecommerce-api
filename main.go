@@ -15,5 +15,6 @@ func main() {
 	db.Setup()
 
 	app := fiber.New()
+	users.RegisterRoutes(app)
 	app.Listen(":3000")
 }
