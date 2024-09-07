@@ -22,7 +22,7 @@ func signup(ctx *fiber.Ctx) (err error) {
 		return ctx.JSON(failedSignupResopnse(err.Error()))
 	}
 	user := New(userInput.Username, userInput.Email, userInput.Password)
-	err = user.Create()
+	err = user.CreateUser()
 
 	if err != nil {
 		utils.LogCustomError("failed to create user", err)
