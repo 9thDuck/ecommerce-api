@@ -27,7 +27,7 @@ func (user *User) hashPassword() error {
 	if err != nil {
 		return err
 	}
-	user.Password = string(hashedPassword)
+	user.HashedPassword = string(hashedPassword)
 	return nil
 }
 
