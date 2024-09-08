@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/9thDuck/ecommerce-api.git/common"
 	"github.com/9thDuck/ecommerce-api.git/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -11,8 +12,7 @@ var gormConfig = gorm.Config{
 }
 
 func connect() (db *gorm.DB, err error) {
-	dsn := utils.GetEnvOrThrow("POSTGRES_DB_DSN")
-	db, err = gorm.Open(postgres.Open(dsn), &gormConfig)
+	db, err = gorm.Open(postgres.Open(common.APP_CONFIG.GetPostgresDbDsn()), &gormConfig)
 
 	if err != nil {
 		return nil, err

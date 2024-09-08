@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/9thDuck/ecommerce-api.git/common"
 	"github.com/9thDuck/ecommerce-api.git/db"
 	"github.com/9thDuck/ecommerce-api.git/users"
 	"github.com/9thDuck/ecommerce-api.git/utils"
@@ -11,6 +12,10 @@ import (
 func main() {
 	err := godotenv.Load()
 	utils.LogFatalCustomError("err loading .env", err)
+
+	// Setup app config. APP_CONFIG is a variable, after this, if all goes well it will be populated with env vars validated to some extent
+	common.APP_CONFIG.ValidateAndSetup()
+
 	// Supply all the entities
 	entitySlice := []any{&users.User{}}
 	db.SetupDbInstance(entitySlice)
