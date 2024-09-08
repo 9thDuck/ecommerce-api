@@ -9,13 +9,20 @@ func createUser(user *User) error {
 	return user.Create()
 }
 
-func loginUser(user *User) error {
+func loginUser(user *User) (accessToken string, refreshToken string, err error) {
 	if err := user.getUser(); err != nil {
-		return err
+		return "", "", err
 	}
 
 	if err := user.verifyLoginCredentials(); err != nil {
-		return err
+		return "", "", err
 	}
-	return nil
+
+	accessToken, refreshToken, err = user.generateToken()
+	if err != nil {
+		return "", "", err
+
+	}
+
+	return accessToken, refreshToken, err
 }

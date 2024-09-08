@@ -3,7 +3,9 @@ package users
 import (
 	"net/http"
 	"strconv"
+	"time"
 
+	"github.com/9thDuck/ecommerce-api.git/common"
 	"github.com/9thDuck/ecommerce-api.git/utils"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -56,12 +58,17 @@ func login(ctx *fiber.Ctx) (err error) {
 	}
 
 	user := New("", userInput.Email, userInput.Password)
-
-	if err = loginUser(user); err != nil {
+	accessToken, refreshToken, err := loginUser(user)
+	if err != nil {
 		utils.LogCustomError("login failed", err)
 		ctx.Status(http.StatusBadRequest)
 		return ctx.JSON(failedResopnse("bad credentials, please check the credentials and try again later"))
 	}
+
+	accessTokenCookie := utils.MakeCookie("access_token", accessToken, time.Now().Add(common.APP_CONFIG.GetExpiryAccessTokenDurationInMinutes()), false, "/")
+	ctx.Cookie(accessTokenCookie)
+	refreshTokenCookie := utils.MakeCookie("refresh_token", refreshToken, time.Now().Add(common.APP_CONFIG.GetExpiryRefreshTokenDurationInHours()), false, "/")
+	ctx.Cookie(refreshTokenCookie)
 
 	ctx.Status(http.StatusOK)
 	return ctx.JSON(successResponse("Successfully logged in", user))
