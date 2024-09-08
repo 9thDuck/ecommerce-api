@@ -2,6 +2,7 @@ package users
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/9thDuck/ecommerce-api.git/utils"
 	"github.com/go-playground/validator/v10"
@@ -22,6 +23,13 @@ func signup(ctx *fiber.Ctx) (err error) {
 		return ctx.JSON(failedResopnse(err.Error()))
 	}
 	user := New(userInput.Username, userInput.Email, userInput.Password)
+	userRole, err := strconv.Atoi(userInput.Role)
+	if err != nil {
+		ctx.Status(http.StatusInternalServerError)
+		return ctx.JSON(failedResopnse("Something went wrong. Try again later"))
+	}
+	user.Role = userRole
+
 	err = createUser(user)
 
 	if err != nil {
