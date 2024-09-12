@@ -2,8 +2,6 @@ package common
 
 import (
 	"time"
-
-	"github.com/9thDuck/ecommerce-api.git/utils"
 )
 
 type AppConfig struct {
@@ -33,17 +31,17 @@ var APP_CONFIG AppConfig = AppConfig{}
 
 func (config *AppConfig) ValidateAndSetup() {
 
-	POSTGRES_DB_DSN := utils.GetEnvOrThrow("POSTGRES_DB_DSN")
-	JWT_SECRET := utils.GetEnvOrThrow("JWT_SECRET")
+	POSTGRES_DB_DSN := GetEnvOrThrow("POSTGRES_DB_DSN")
+	JWT_SECRET := GetEnvOrThrow("JWT_SECRET")
 
-	EXPIRY_ACCESS_TOKEN_DURATION_IN_MINUTES, err := utils.EnvVarToTimeDuration("EXPIRY_ACCESS_TOKEN_DURATION_IN_MINUTES", time.Minute)
+	EXPIRY_ACCESS_TOKEN_DURATION_IN_MINUTES, err := EnvVarToTimeDuration("EXPIRY_ACCESS_TOKEN_DURATION_IN_MINUTES", time.Minute)
 	if err != nil {
-		utils.LogFatalCustomError("env variable EXPIRY_ACCESS_TOKEN_DURATION_IN_MINUTES set with invalid value", err)
+		LogFatalCustomError("env variable EXPIRY_ACCESS_TOKEN_DURATION_IN_MINUTES set with invalid value", err)
 	}
 
-	EXPIRY_REFRESH_TOKEN_DURATION_IN_HOURS, err := utils.EnvVarToTimeDuration("EXPIRY_REFRESH_TOKEN_DURATION_IN_HOURS", time.Hour)
+	EXPIRY_REFRESH_TOKEN_DURATION_IN_HOURS, err := EnvVarToTimeDuration("EXPIRY_REFRESH_TOKEN_DURATION_IN_HOURS", time.Hour)
 	if err != nil {
-		utils.LogFatalCustomError("env variable EXPIRY_REFRESH_TOKEN_DURATION_IN_HOURS set with invalid value", err)
+		LogFatalCustomError("env variable EXPIRY_REFRESH_TOKEN_DURATION_IN_HOURS set with invalid value", err)
 	}
 
 	config.postgresDbDSN = POSTGRES_DB_DSN

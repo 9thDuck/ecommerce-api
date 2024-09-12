@@ -18,11 +18,18 @@ func loginUser(user *User) (accessToken string, refreshToken string, err error) 
 		return "", "", err
 	}
 
-	accessToken, refreshToken, err = user.generateToken()
+	accessToken, refreshToken, err = user.GenerateToken()
 	if err != nil {
 		return "", "", err
 
 	}
 
 	return accessToken, refreshToken, err
+}
+
+func getUserDetails(user *User) error {
+	if err := user.getUser(); err != nil {
+		return err
+	}
+	return nil
 }

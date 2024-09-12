@@ -2,21 +2,20 @@ package users
 
 import (
 	"errors"
-	"fmt"
-	"time"
 
-	"github.com/9thDuck/ecommerce-api.git/common"
+	"github.com/9thDuck/ecommerce-api.git/auth"
 	"github.com/9thDuck/ecommerce-api.git/db"
-	"github.com/golang-jwt/jwt"
+	"github.com/9thDuck/ecommerce-api.git/entities"
 	"github.com/jackc/pgx/v5/pgconn"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (user *User) Create() error {
-	err := db.Instance.Create(user).Error
+type User entities.User
+
+func (user User) Create() error {
+	err := db.Instance.Create(&user).Error
 	if err != nil {
 		if pgError, isPgError := err.(*pgconn.PgError); isPgError {
-			fmt.Println(pgError.ConstraintName)
 			err = db.TranslatePgErrors(pgError)
 		}
 
@@ -35,18 +34,19 @@ func (user *User) hashPassword() error {
 	return nil
 }
 
-func New(username, email, password string) *User {
+func New(username, email, password string, role int) *User {
 	return &User{
 		Username: username,
 		Email:    email,
 		Password: password,
+		Role:     role,
 	}
 
 }
 
 func (user *User) getUser() error {
 	if foundUsers := db.Instance.Limit(1).Find(&user, &user).RowsAffected; foundUsers == 0 {
-		return errors.New("")
+		return errors.New("User not found")
 	}
 	return nil
 }
@@ -58,36 +58,10 @@ func (user *User) verifyLoginCredentials() error {
 	return nil
 }
 
-func (user *User) generateToken() (accessTokenStr string, refreshTokenStr string, err error) {
-
-	EXPIRY_ACCESS_TOKEN_VALUE_IN_MINUTES_IN_UNIX := time.Now().Add(common.APP_CONFIG.GetExpiryAccessTokenDurationInMinutes()).Unix()
-	EXPIRY_REFRESH_TOKEN_DURATION_IN_HOURS_IN_UNIX := time.Now().Add(common.APP_CONFIG.GetExpiryRefreshTokenDurationInHours()).Unix()
-
-	accessTokenClaims := jwt.MapClaims{
-		"id":   user.ID,
-		"role": user.Role,
-		"exp":  EXPIRY_ACCESS_TOKEN_VALUE_IN_MINUTES_IN_UNIX,
+func (user *User) GenerateToken() (accessTokenStr string, refreshTokenStr string, err error) {
+	claims := auth.TokenClaims{
+		ID:   user.ID,
+		Role: user.Role,
 	}
-
-	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessTokenClaims)
-	accessTokenStr, err = accessToken.SignedString([]byte(common.APP_CONFIG.GetJwtSecret()))
-
-	if err != nil {
-		return "", "", nil
-	}
-
-	refreshTokenClaims := jwt.MapClaims{
-		"id":   user.ID,
-		"role": user.Role,
-		"exp":  EXPIRY_REFRESH_TOKEN_DURATION_IN_HOURS_IN_UNIX,
-	}
-
-	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshTokenClaims)
-
-	refreshTokenStr, err = refreshToken.SignedString([]byte(common.APP_CONFIG.GetJwtSecret()))
-	if err != nil {
-		return "", "", nil
-	}
-
-	return accessTokenStr, refreshTokenStr, nil
+	return auth.GenerateToken(claims)
 }

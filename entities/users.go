@@ -1,4 +1,4 @@
-package users
+package entities
 
 import (
 	"time"
@@ -9,7 +9,7 @@ import (
 type User struct {
 	ID             uuid.UUID `json:"id,omitempty" gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
 	Username       string    `json:"username" gorm:"unique"`
-	Role           int       `json:"role"`
+	Role           int       `json:"role" gorm:"type:int;not null"`
 	Email          string    `json:"email" gorm:"unique"`
 	Password       string    `json:"-" gorm:"-"`
 	HashedPassword string    `json:"-"`
