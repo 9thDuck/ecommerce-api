@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	ADMIN  Role = 0
-	SELLER Role = 1
-	BUYER  Role = 2
+	ADMIN  Role = 1
+	SELLER Role = 2
+	BUYER  Role = 3
 )
 
 type Role int
@@ -26,12 +26,12 @@ func (r Role) IsBuyer() bool {
 	return r == BUYER
 }
 
-func RoleGuard(role Role) fiber.Handler {
+func RoleGuard(requiredRole Role) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		user := ctx.Locals("user").(auth.TokenClaims)
 		userRole := Role(user.Role)
 
-		if userRole > role {
+		if userRole < requiredRole {
 			ctx.Status(fiber.StatusForbidden)
 			return ctx.JSON(common.FailedResponse("Forbidden"))
 		}

@@ -19,7 +19,7 @@ func main() {
 	common.APP_CONFIG.ValidateAndSetup()
 
 	// Supply all the entities
-	entitySlice := []any{&entities.User{}, &entities.Category{}, &entities.Product{}}
+	entitySlice := []any{&entities.User{}, &entities.Category{}, &entities.Product{}, &entities.Session{}}
 	db.SetupDbInstance(entitySlice)
 
 	app := fiber.New()
@@ -31,6 +31,6 @@ func main() {
 	users.RegisterRoutes(app)
 	categories.RegisterRoutes(app)
 	products.RegisterRoutes(app)
-	
+
 	app.Listen(":3000")
 }

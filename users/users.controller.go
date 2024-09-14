@@ -101,3 +101,45 @@ func getMe(ctx *fiber.Ctx) error {
 	ctx.Status(http.StatusOK)
 	return ctx.JSON(successResponse("Successfully fetched your user data", &user))
 }
+
+func logout(ctx *fiber.Ctx) error {
+	refreshToken := ctx.Cookies("refresh_token")
+	err := logoutUser(refreshToken)
+	if err != nil {
+		ctx.Status(http.StatusInternalServerError)
+		return ctx.JSON(failedResopnse("Something went wrong"))
+	}
+
+	ctx.Status(http.StatusOK)
+	return ctx.JSON(successResponse("Successfully logged out", nil))
+}
+
+func logoutOfAllDevices(ctx *fiber.Ctx) error {
+	userLocals := ctx.Locals("user").(auth.TokenClaims)
+	err := logoutOfAllSessions(userLocals.ID)
+	if err != nil {
+		ctx.Status(http.StatusInternalServerError)
+		return ctx.JSON(failedResopnse("Something went wrong"))
+	}
+
+	ctx.Status(http.StatusOK)
+	return ctx.JSON(successResponse("Successfully logged out of all devices", nil))
+}
+
+func banNonAdmin(ctx *fiber.Ctx) error {
+	userId := ctx.Params("id")
+	ID, err := uuid.Parse(userId)
+	if err != nil {
+		ctx.Status(http.StatusBadRequest)
+		return ctx.JSON(failedResopnse("given id is invalid"))
+	}
+
+	err = banUser(ID)
+	if err != nil {
+		ctx.Status(http.StatusBadRequest)
+		return ctx.JSON(failedResopnse("Something went wrong"))
+	}
+
+	ctx.Status(http.StatusOK)
+	return ctx.JSON(successResponse("Successfully banned user", nil))
+}

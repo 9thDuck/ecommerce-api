@@ -13,8 +13,18 @@ type User struct {
 	Email          string    `json:"email" gorm:"unique;not null;type:varchar(50)"`
 	Password       string    `json:"-" gorm:"-"`
 	HashedPassword string    `json:"-"`
-	BlackListed    bool      `json:"-" gorm:"default:false"`
+	Banned         bool      `json:"-" gorm:"default:false"`
 	Verified       bool      `json:"verified" gorm:"default:false"`
 	CreatedAt      time.Time `json:"created_at" gorm:"not null"`
 	UpdatedAt      time.Time `json:"updated_at" gorm:"not null"`
+}
+
+type Session struct {
+	ID           uint      `json:"id,omitempty" gorm:"type:uint;primaryKey;autoIncrement"`
+	UserID       uuid.UUID `json:"user_id,omitempty" gorm:"type:uuid;not null"`
+	RefreshToken string    `json:"refresh_token,omitempty" gorm:"type:text;not null"`
+	User         User      `json:"user,omitempty" gorm:"foreignKey:UserID;references:ID"`
+	LoggedOut    bool      `json:"logged_out" gorm:"default:false"`
+	CreatedAt    time.Time `json:"created_at" gorm:"not null"`
+	UpdatedAt    time.Time `json:"updated_at" gorm:"not null"`
 }

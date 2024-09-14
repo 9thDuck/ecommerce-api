@@ -24,11 +24,28 @@ func VerifyToken(ctx *fiber.Ctx) error {
 			ctx.Status(http.StatusUnauthorized)
 			return ctx.JSON(common.Response{Message: "Unauthorized", Data: nil})
 		}
+		// Refresh token is valid
 
-		// Refresh token is valid, generate new access token
-		id, _ := uuid.Parse(claims["id"].(string))
+		userId, _ := uuid.Parse(claims["id"].(string))
+
+		userSession, err := getUserSession(refreshToken, userId)
+		if err != nil {
+			ctx.Status(http.StatusUnauthorized)
+			return ctx.JSON(common.Response{Message: "Unauthorized", Data: nil})
+		}
+		//getting the existing user session to see if the user has been logged out of all devices. If that is the case, then all the refresh tokens given to user will be invalid, since we use user id to identify all the active sessions and logout all of them.
+		if userSession.Session.LoggedOut {
+			ctx.Status(http.StatusUnauthorized)
+			return ctx.JSON(common.Response{Message: "Unauthorized", Data: nil})
+		}
+		//if the user is banned, then we don't want to issue new tokens
+		if userSession.User.Banned {
+			ctx.Status(http.StatusUnauthorized)
+			return ctx.JSON(common.Response{Message: "Your account has been banned. If you believe this is a mistake, please contact support.", Data: nil})
+		}
+
 		role := int(claims["role"].(float64))
-		newClaims := auth.TokenClaims{ID: id, Role: role}
+		newClaims := auth.TokenClaims{ID: userId, Role: role}
 		newAccessToken, _, err := auth.GenerateToken(newClaims)
 		if err != nil {
 			ctx.Status(http.StatusInternalServerError)
