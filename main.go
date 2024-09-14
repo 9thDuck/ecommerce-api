@@ -1,9 +1,11 @@
 package main
 
 import (
+	"github.com/9thDuck/ecommerce-api.git/categories"
 	"github.com/9thDuck/ecommerce-api.git/common"
 	"github.com/9thDuck/ecommerce-api.git/db"
 	"github.com/9thDuck/ecommerce-api.git/entities"
+	"github.com/9thDuck/ecommerce-api.git/products"
 	"github.com/9thDuck/ecommerce-api.git/users"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
@@ -17,10 +19,18 @@ func main() {
 	common.APP_CONFIG.ValidateAndSetup()
 
 	// Supply all the entities
-	entitySlice := []any{&entities.User{}}
+	entitySlice := []any{&entities.User{}, &entities.Category{}, &entities.Product{}}
 	db.SetupDbInstance(entitySlice)
 
 	app := fiber.New()
+
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Hello!")
+	})
+
 	users.RegisterRoutes(app)
+	categories.RegisterRoutes(app)
+	products.RegisterRoutes(app)
+	
 	app.Listen(":3000")
 }
