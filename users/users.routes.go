@@ -5,12 +5,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func RegisterRoutes(server *fiber.App) {
-	server.Post("/users/signup", signup)
-	server.Post("/users/login", login)
-	server.Get("/users/me", middleware.VerifyToken, getMe)
-	server.Get("/users/:id", middleware.VerifyToken, middleware.RoleGuard(middleware.ADMIN), getUserById)
-	server.Delete("/users/logout", middleware.VerifyToken, logout)
-	server.Delete("/users/logout-all", middleware.VerifyToken, logoutOfAllDevices)
-	server.Patch("/users/:id", middleware.VerifyToken, middleware.RoleGuard(middleware.ADMIN), banNonAdmin)
+func RegisterRoutes(app *fiber.App) {
+	app.Post("/users/signup", signup)
+	app.Post("/users/login", login)
+	app.Get("/users/me", middleware.VerifyToken, getMe)
+	app.Get("/users/:id", middleware.VerifyToken, middleware.RoleGuard(middleware.ADMIN), getUserById)
+	app.Delete("/users/logout", middleware.VerifyToken, logout)
+	app.Delete("/users/logout-all", middleware.VerifyToken, logoutOfAllDevices)
+	app.Patch("/users/:id", middleware.VerifyToken, middleware.RoleGuard(middleware.ADMIN), banNonAdmin)
 }
