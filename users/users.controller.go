@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/9thDuck/ecommerce-api.git/auth"
 	"github.com/9thDuck/ecommerce-api.git/common"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -85,4 +86,18 @@ func getUserById(ctx *fiber.Ctx) error {
 
 	ctx.Status(http.StatusOK)
 	return ctx.JSON(successResponse("Here is your data", &user))
+}
+
+func getMe(ctx *fiber.Ctx) error {
+	userLocals := ctx.Locals("user").(auth.TokenClaims)
+	user := User{ID: userLocals.ID}
+	err := getUserDetails(&user)
+
+	if err != nil {
+		ctx.Status(http.StatusInternalServerError)
+		return ctx.JSON(failedResopnse("Something went wrong"))
+	}
+
+	ctx.Status(http.StatusOK)
+	return ctx.JSON(successResponse("Successfully fetched your user data", &user))
 }
