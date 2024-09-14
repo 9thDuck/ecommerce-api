@@ -1,6 +1,8 @@
 package entities
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 )
 
@@ -16,4 +18,6 @@ type Product struct {
 	Category    Category  `json:"-" gorm:"foreignKey:CategoryID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
 	CreatedBy   uuid.UUID `json:"created_by" gorm:"type:uuid;not null"`
 	User        User      `json:"-" gorm:"foreignKey:CreatedBy;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
+	CreatedAt   time.Time `json:"created_at" gorm:"not null"`
+	UpdatedAt   time.Time `json:"updated_at" gorm:"not null"`
 }
