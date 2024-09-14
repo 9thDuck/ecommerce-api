@@ -19,7 +19,7 @@ func main() {
 	common.APP_CONFIG.ValidateAndSetup()
 
 	// Supply all the entities
-	entitySlice := []any{&entities.User{}, &entities.Category{}, &entities.Product{}, &entities.Session{}}
+	entitySlice := []any{&entities.User{}, &entities.Category{}, &entities.Product{}, &entities.Session{}, &entities.Cart{}}
 	db.SetupDbInstance(entitySlice)
 
 	app := fiber.New()
