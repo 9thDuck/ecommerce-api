@@ -38,9 +38,6 @@ func VerifyToken(ctx *fiber.Ctx) error {
 		// Set new access token in cookie
 		accessTokenCookie := common.MakeCookie("access_token", newAccessToken, time.Now().Add(common.APP_CONFIG.GetExpiryAccessTokenDurationInMinutes()), false, "/")
 		ctx.Cookie(accessTokenCookie)
-
-		// Update claims with new access token claims
-		claims, _ = auth.ParseToken(newAccessToken)
 	}
 
 	ctx.Locals("user", claims)
