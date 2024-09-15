@@ -1,9 +1,11 @@
 package cart
 
 import (
+	"github.com/9thDuck/ecommerce-api.git/common"
 	"github.com/9thDuck/ecommerce-api.git/db"
 	"github.com/9thDuck/ecommerce-api.git/entities"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -24,13 +26,14 @@ func upsertCartItem(userID uuid.UUID, productID uint, quantity int) error {
 	return result.Error
 }
 
-func getCartItemsByUserID(userID uuid.UUID) (*[]cartItem, error) {
-	var cartItems []cartItem
-	err := db.Instance.Where("user_id = ?", userID).Find(&cartItems).Error
-	if err != nil {
-		return nil, err
+func GetCartItemsByUserID(tx *gorm.DB, userID uuid.UUID) (*[]common.CartItem, error) {
+	if tx == nil {
+		tx = db.Instance
 	}
-	return &cartItems, nil
+
+	var cartItems []common.CartItem
+	err := tx.Where("user_id = ?", userID).Find(&cartItems).Error
+	return &cartItems, err
 }
 
 func decrement(userID uuid.UUID, productID uint) error {
@@ -57,8 +60,11 @@ func delete(userID uuid.UUID, productID uint) error {
 	return result.Error
 }
 
-func deleteAll(userID uuid.UUID) error {
-	result := db.Instance.Exec(`
+func deleteAll(tx *gorm.DB, userID uuid.UUID) error {
+	if tx == nil {
+		tx = db.Instance
+	}
+	result := tx.Exec(`
 		DELETE FROM cart
 		WHERE user_id = ?
 	`, userID)

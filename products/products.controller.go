@@ -150,11 +150,10 @@ func getProductsBySearch(c *fiber.Ctx) error {
 	return c.JSON(successSearchProductsResponse(products))
 }
 
-
 func getProducts(c *fiber.Ctx) error {
-    products, err := getAllProducts()
-    if err != nil {
-        return c.Status(fiber.StatusInternalServerError).JSON(internalServerErrorResponse())
-    }
-    return c.JSON(successGetProductsResponse(products))
+	products, err := getAllProducts()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(internalServerErrorResponse())
+	}
+	return c.JSON(successGetProductsResponse(products))
 }

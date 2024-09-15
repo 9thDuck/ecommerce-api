@@ -95,7 +95,7 @@ func clearCart(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(errorClearCartResponse())
 	}
 
-	err = deleteAllFromCart(userId)
+	err = DeleteAllFromCart(nil, userId)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(errorClearCartResponse())
 	}

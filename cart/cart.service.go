@@ -1,20 +1,17 @@
 package cart
 
 import (
+	"github.com/9thDuck/ecommerce-api.git/common"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
-
-type cartItem struct {
-	ProductID uint `json:"product_id"`
-	Quantity  int  `json:"quantity"`
-}
 
 func addToCartOrIncrement(userID uuid.UUID, productID uint, quantity int) error {
 	return upsertCartItem(userID, productID, quantity)
 }
 
-func getCartByUserID(userID uuid.UUID) (*[]cartItem, error) {
-	return getCartItemsByUserID(userID)
+func getCartByUserID(userID uuid.UUID) (*[]common.CartItem, error) {
+	return GetCartItemsByUserID(nil, userID)
 }
 
 func remove(userID uuid.UUID, productID uint) error {
@@ -25,6 +22,6 @@ func deleteCartItem(userID uuid.UUID, productID uint) error {
 	return delete(userID, productID)
 }
 
-func deleteAllFromCart(userID uuid.UUID) error {
-	return deleteAll(userID)
+func DeleteAllFromCart(tx *gorm.DB, userID uuid.UUID) error {
+	return deleteAll(tx, userID)
 }

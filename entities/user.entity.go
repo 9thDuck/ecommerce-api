@@ -11,6 +11,7 @@ type User struct {
 	Username       string    `json:"username" gorm:"unique;not null;type:varchar(20)"`
 	Role           int       `json:"role" gorm:"type:int;not null"`
 	Email          string    `json:"email" gorm:"unique;not null;type:varchar(50)"`
+	Address        string    `json:"address" gorm:"type:varchar(150)"`
 	Password       string    `json:"-" gorm:"-"`
 	HashedPassword string    `json:"-"`
 	Banned         bool      `json:"-" gorm:"default:false"`

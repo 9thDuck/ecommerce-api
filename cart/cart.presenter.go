@@ -5,10 +5,10 @@ import (
 )
 
 type cartResponse struct {
-	Items []cartItem `json:"items"`
+	Items []common.CartItem `json:"items"`
 }
 
-func successGetCartResponse(cartItems *[]cartItem) *common.Response {
+func successGetCartResponse(cartItems *[]common.CartItem) *common.Response {
 	return &common.Response{
 		Message: "Cart retrieved successfully",
 		Data: cartResponse{
