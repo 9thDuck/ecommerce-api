@@ -6,10 +6,10 @@ import (
 )
 
 func RegisterRoutes(app *fiber.App) {
-	app.Get("/products", middleware.VerifyToken, getProducts)
-	app.Get("/products/:id", middleware.VerifyToken, getProduct)
-	app.Get("/products/category/:id", middleware.VerifyToken, getProductsByCategoryID)
-	app.Get("/products/search", middleware.VerifyToken, getProductsBySearch)
+	app.Get("/products", getProducts)
+	app.Get("/products/:id", getProduct)
+	app.Get("/products/category/:id", getProductsByCategoryID)
+	app.Get("/products/search", getProductsBySearch)
 	app.Post("/products", middleware.VerifyToken, createProduct)
 	app.Put("/products/:id", middleware.VerifyToken, updateProduct)
 	app.Delete("/products/:id", middleware.VerifyToken, deleteProduct)
