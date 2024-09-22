@@ -3,9 +3,12 @@ package cart
 import (
 	"strconv"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
+
+var validate = validator.New()
 
 func addToCart(c *fiber.Ctx) error {
 	var input struct {
@@ -14,6 +17,10 @@ func addToCart(c *fiber.Ctx) error {
 	}
 
 	if err := c.BodyParser(&input); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(errorAddToCartResponse())
+	}
+
+	if err := validate.Struct(input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(errorAddToCartResponse())
 	}
 
